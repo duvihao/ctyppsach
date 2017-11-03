@@ -151,6 +151,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\congnotheothoigiansController.cs" />
     <Compile Include="Controllers\danhmucsachdabansController.cs" />
+    <Compile Include="Controllers\doanhthuController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\nxbsController.cs" />
     <Compile Include="Controllers\phieunhapsController.cs" />
@@ -161,6 +162,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\chitietdoanhthu.cs" />
     <Compile Include="Models\congnotheothoigian.cs">
       <DependentUpon>ctyppsachmvc.tt</DependentUpon>
     </Compile>
@@ -191,10 +193,12 @@
     <Compile Include="Models\daily.cs">
       <DependentUpon>ctyppsachmvc.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\dailycongnoviewmodel.cs" />
     <Compile Include="Models\danhmucsachdaban.cs">
       <DependentUpon>ctyppsachmvc.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\danhmucsachdabanviewmodel.cs" />
+    <Compile Include="Models\doanhthuviewmodel.cs" />
     <Compile Include="Models\hangtoncuadaily.cs">
       <DependentUpon>ctyppsachmvc.tt</DependentUpon>
     </Compile>
@@ -204,6 +208,7 @@
     <Compile Include="Models\nxb.cs">
       <DependentUpon>ctyppsachmvc.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\nxbsotienphaitraviewmodel.cs" />
     <Compile Include="Models\phieunhap.cs">
       <DependentUpon>ctyppsachmvc.tt</DependentUpon>
     </Compile>
@@ -353,16 +358,9 @@
     <Content Include="Views\nxbs\Edit.cshtml" />
     <Content Include="Views\nxbs\Index.cshtml" />
     <Content Include="Views\tonkhoes\Index.cshtml" />
-    <Content Include="Views\congnotheothoigians\Create.cshtml" />
-    <Content Include="Views\congnotheothoigians\Delete.cshtml" />
-    <Content Include="Views\congnotheothoigians\Details.cshtml" />
-    <Content Include="Views\congnotheothoigians\Edit.cshtml" />
     <Content Include="Views\congnotheothoigians\Index.cshtml" />
-    <Content Include="Views\sotienphaitrachonxbs\Create.cshtml" />
-    <Content Include="Views\sotienphaitrachonxbs\Delete.cshtml" />
-    <Content Include="Views\sotienphaitrachonxbs\Details.cshtml" />
-    <Content Include="Views\sotienphaitrachonxbs\Edit.cshtml" />
     <Content Include="Views\sotienphaitrachonxbs\Index.cshtml" />
+    <Content Include="Views\doanhthu\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -15,25 +15,36 @@ namespace ctyppsachmvc.Controllers
         private ctyppsachEntities db = new ctyppsachEntities();
 
         // GET: tonkhoes
-        public ActionResult Index(string thoidiem)
+        public ActionResult Index(string thoidiem, string ids)
         {
-
+            ViewBag.idsach = new SelectList(db.sach, "idsach", "tensach");
             DateTime searchDate;
+            int idsach = 0;
             if (DateTime.TryParse(thoidiem, out searchDate))
             {
-                List<tonkho> tks = new List<tonkho>();
-                DateTime tomorrowdate = searchDate.AddDays(1);
-                var tonkhoes = db.tonkho.Include(c => c.sach)
-                    .OrderByDescending(o => o.idtk)
-                    .FirstOrDefault(h => h.thoidiem <= tomorrowdate);
+                List<sach> saches = new List<sach>();
+                if (int.TryParse(ids, out idsach))
+                    saches = db.sach.Where(o => o.idsach == idsach).Include(t => t.nxb).ToList();
+                else saches = db.sach.Include(t => t.nxb).ToList();
 
-                tks.Add(tonkhoes);
-                return View(tks);
-                // do not use .Equals() which can not be converted to SQL
+                foreach (sach o in saches)
+                {
+                    int soluongnhap = (int)db.ctpn.Where(ct => ct.idsach == o.idsach && ct.phieunhap.ngaynhap > searchDate)
+                                                  .Select(ct => ct.soluong)
+                                                  .DefaultIfEmpty(0)
+                                                  .Sum();
+                    int soluongxuat = (int)db.ctpx.Where(ct => ct.idsach == o.idsach && ct.phieuxuat.ngayxuat > searchDate)
+                                                  .Select(ct => ct.soluong)
+                                                  .DefaultIfEmpty(0)
+                                                  .Sum();
+
+                    o.soluongton = o.soluongton + soluongxuat - soluongnhap;
+                }
+                return View(saches);
             }
-
-            var tonkho = db.tonkho.Include(t => t.sach);
-            return View(tonkho.ToList());
+            
+            var s = db.sach.Include(t => t.nxb);
+            return View(s.ToList());
         }
 
         protected override void Dispose(bool disposing)

@@ -55,9 +55,10 @@ namespace ctyppsachmvc.Controllers
             if (ModelState.IsValid)
             {
                 int iddmsdb = 1;
-                if (db.phieuxuat.Any())
-                    iddmsdb = db.phieuxuat.Max(o => o.idpx) + 1;
+                if (db.danhmucsachdaban.Any())
+                    iddmsdb = db.danhmucsachdaban.Max(o => o.iddmsdb) + 1;
                 int idct = 1;
+                decimal tongtien = 0;
                 foreach (ctdmsdb ct in ctdmsdb)
                 {
                     ct.iddmsdb = iddmsdb;
@@ -78,7 +79,14 @@ namespace ctyppsachmvc.Controllers
                         ViewBag.idsach = new SelectList(db.sach, "idsach", "tensach");
                         return View();
                     }
+                    tongtien += (decimal)(ct.soluong * htdl.sach.giaxuat);
+
+                    //tim nxb cua cuon sach da duoc ban nay
+                    sach s = db.sach.Find(ct.idsach);
+                    nxb n = db.nxb.Find(s.idnxb);
+                    n.sotienphaitra += ct.soluong * s.gianhap;
                 }
+                danhmucsachdaban.ctdmsdb = ctdmsdb;
                 db.danhmucsachdaban.Add(danhmucsachdaban);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -109,10 +117,51 @@ namespace ctyppsachmvc.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "iddmsdb,iddl,thoigian,sotiendathanhtoan,sotienconno")] danhmucsachdaban danhmucsachdaban)
+        public ActionResult Edit([Bind(Prefix = "danhmucsachdaban")] danhmucsachdaban danhmucsachdaban,
+                                 [Bind(Prefix = "ct")] ctdmsdb[] ctdmsdb)
         {
             if (ModelState.IsValid)
             {
+                int iddmsdb = danhmucsachdaban.iddmsdb;
+                int idct = 1;
+                //xoa chi tiet cu trong database table hangtoncuadaily
+                var ctcudmsdb = db.ctdmsdb.Where(o => o.iddmsdb == danhmucsachdaban.iddmsdb);
+                foreach (ctdmsdb ct in ctcudmsdb)
+                {
+                    hangtoncuadaily ht = db.hangtoncuadaily.FirstOrDefault(o => o.iddl == danhmucsachdaban.iddl && o.idsach == ct.idsach);
+                    int hangtondaily = (int)(ht.soluongchuaban + ct.soluong);
+                }
+
+                //thêm chi tiết sửa vào database table hangtoncuadaily
+                foreach (ctdmsdb ct in ctdmsdb)
+                {
+                    ct.iddmsdb = iddmsdb;
+                    ct.iddmsdb = idct;
+                    idct++;
+                    hangtoncuadaily ht = db.hangtoncuadaily.FirstOrDefault(o => o.iddl == danhmucsachdaban.iddl && o.idsach == ct.idsach);
+                    ht.soluongchuaban = (int)(ht.soluongchuaban - ct.soluong);
+                    if (ht.soluongchuaban < 0)
+                    {
+                        ViewBag.iddl = new SelectList(db.daily, "iddl", "tendl", danhmucsachdaban.iddl);
+                        ViewBag.idsach = new SelectList(db.sach, "idsach", "tensach");
+                        return View();
+                    }
+                    nxb n = db.nxb.Find(ct.sach.idnxb);
+                    n.sotienphaitra += ct.soluong * ct.sach.gianhap;
+                }
+                foreach (ctdmsdb ct in ctcudmsdb)
+                {
+                    nxb n = db.nxb.Find(ct.sach.idnxb);
+                    n.sotienphaitra -= ct.soluong * ct.sach.gianhap;
+                    if (n.sotienphaitra < 0)
+                    {
+                        ViewBag.iddl = new SelectList(db.daily, "iddl", "tendl", danhmucsachdaban.iddl);
+                        ViewBag.idsach = new SelectList(db.sach, "idsach", "tensach");
+                        return View();
+                    }
+                    db.ctdmsdb.Remove(ct);
+                }
+
                 db.Entry(danhmucsachdaban).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
