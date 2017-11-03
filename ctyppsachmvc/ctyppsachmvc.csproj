@@ -155,6 +155,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\nxbsController.cs" />
     <Compile Include="Controllers\phieunhapsController.cs" />
+    <Compile Include="Controllers\phieutratiensController.cs" />
     <Compile Include="Controllers\phieuxuatsController.cs" />
     <Compile Include="Controllers\sachesController.cs" />
     <Compile Include="Controllers\sotienphaitrachonxbsController.cs" />
@@ -361,6 +362,11 @@
     <Content Include="Views\congnotheothoigians\Index.cshtml" />
     <Content Include="Views\sotienphaitrachonxbs\Index.cshtml" />
     <Content Include="Views\doanhthu\Index.cshtml" />
+    <Content Include="Views\phieutratiens\Create.cshtml" />
+    <Content Include="Views\phieutratiens\Delete.cshtml" />
+    <Content Include="Views\phieutratiens\Details.cshtml" />
+    <Content Include="Views\phieutratiens\Edit.cshtml" />
+    <Content Include="Views\phieutratiens\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
